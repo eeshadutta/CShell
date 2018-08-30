@@ -1,16 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/utsname.h>
-#include <pwd.h>
-#include <unistd.h>
-#include "cd.h"
-#include "pwd.h"
-#include "echo.h"
-#include "ls.h"
+#include "headers.h"
+#include "variables.h"
 
 struct utsname uinfo;
 char present_dir[3][500];
+bcg background[100];
+int back_c=0,curid=0; 
+int mode;
 
 char *replace_str(char *str, char *orig, char *rep)
 {
@@ -78,6 +73,7 @@ int main()
         for (i = 0; i < j; i++)
         {
             char *token;
+            char st[100][100];
             token = strtok(token_arr[i], " \n\t\r");
             if (token == NULL)
                 continue;
@@ -92,6 +88,21 @@ int main()
                 echo(token);
             else if (strcmp(token, "ls") == 0)
                 ls(token);
+            else if (strcmp(token, "pinfo") == 0)
+                pinfo(token);
+            else
+            {
+                int k = 0;
+                while (token != NULL)
+                {
+                    strcpy (st[k++], token);
+                    token = strtok(NULL, " \n\t\r");
+                }
+                if (strcmp(st[k-1], "&") == 0)
+                    background_process(st, k);
+                else    
+                    foreground(st, k);
+            }
         }
         print();
         free(com);

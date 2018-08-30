@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include "cd.h"
+#include "headers.h"
 
 void cd(char *token, char *present_dir)
 {
