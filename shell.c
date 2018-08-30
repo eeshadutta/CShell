@@ -4,7 +4,7 @@
 struct utsname uinfo;
 char present_dir[3][500];
 bcg background[100];
-int back_c=0,curid=0; 
+int back_c = 0, curid = 0;
 int mode;
 
 char *replace_str(char *str, char *orig, char *rep)
@@ -32,6 +32,43 @@ void print()
     free(cwd);
 }
 
+// void sig_handle(int sign)
+// {
+//     if (sign == 2 || sign == 3)
+//     {
+//         fflush(stdout);
+//         printf("\n");
+//         signal(SIGQUIT, sig_handle);
+//         signal(SIGINT, sig_handle);
+//     }
+//     if (sign == 20)
+//         kill(curid, SIGTSTP);
+// }
+
+void child_sig(int signo)
+{
+    pid_t pid;
+    int x;
+    pid = waitpid(WAIT_ANY, &x, WNOHANG);
+    int i;
+    for (i = 1; i <= back_c; i++)
+    {
+        if (background[i].pi == pid && background[i].state == 1)
+        {
+            int exit_status = WEXITSTATUS(x);
+            background[i].state = 0;
+            if (exit_status == 0)
+                printf("\n%s with pid %d exited normally\n", background[i].name, background[i].pi);
+            else
+                printf("\n%s with pid %d exited with exit status %d\n", background[i].name, background[i].pi, exit_status);
+            print();
+            fflush(stdout);
+            back_c--;
+            break;
+        }
+    }
+}
+
 int main()
 {
     int errno = 0;
@@ -51,6 +88,15 @@ int main()
     free(cwd);
 
     print();
+
+    // /signal(SIGINT, SIG_IGN);
+    // signal(SIGINT, sig_handle);
+    signal(SIGCHLD, SIG_IGN);
+    signal(SIGCHLD, child_sig);
+    // signal(SIGTSTP, SIG_IGN);
+    // signal(SIGTSTP, sig_handle);
+    // signal(SIGQUIT, SIG_IGN);
+    // signal(SIGQUIT, sig_handle);
 
     while (1)
     {
@@ -87,20 +133,20 @@ int main()
             else if (strcmp(token, "echo") == 0)
                 echo(token);
             else if (strcmp(token, "ls") == 0)
-                ls(token);
+                ls(token,  present_dir[2]);
             else if (strcmp(token, "pinfo") == 0)
-                pinfo(token);
+                pinfo(token, present_dir[2]);
             else
             {
                 int k = 0;
                 while (token != NULL)
                 {
-                    strcpy (st[k++], token);
+                    strcpy(st[k++], token);
                     token = strtok(NULL, " \n\t\r");
                 }
-                if (strcmp(st[k-1], "&") == 0)
+                if (strcmp(st[k - 1], "&") == 0)
                     background_process(st, k);
-                else    
+                else
                     foreground(st, k);
             }
         }

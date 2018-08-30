@@ -1,16 +1,7 @@
 #include "headers.h"
 
-void pinfo(char *token)
+void pinfo(char *token, char *home_dir)
 {
-    // struct stat st;
-    // token = strtok(NULL, " ");
-    // if (token == NULL)
-    // {
-    //     int pid = getpid();
-    //     printf("pid -- %d\n", pid);
-
-    // }
-    // return;
     char stat[1000];
     char exec[1000];
     int c = 0;
@@ -20,7 +11,6 @@ void pinfo(char *token)
         strcpy(st[c++], token);
         token = strtok(NULL, " \n\t\r");
     }
-    //printf ("c %d\n", c);
     if (c > 1)
     {
         strcpy(stat, "/proc/");
@@ -34,7 +24,6 @@ void pinfo(char *token)
     {
         char buff[40];
         sprintf(buff, "%d", getpid());
-        //printf("buff: %s\n", buff);
         strcpy(stat, "/proc/");
         strcat(stat, buff);
         strcat(stat, "/stat");
@@ -42,7 +31,6 @@ void pinfo(char *token)
         strcat(exec, buff);
         strcat(exec, "/exe");
     }
-    //printf ("%s %s\n", stat, exec);
     FILE *fd;
     if ((fd = fopen(stat, "r")) == NULL)
         printf("Error: Process desn't exist\n");
@@ -51,10 +39,28 @@ void pinfo(char *token)
         int pid;
         char status;
         long unsigned memory;
+        char path[1000];
         fscanf(fd, "%d %*s %c %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %lu %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d", &pid, &status, &memory);
         fclose(fd);
         printf("pid -- %d\n", pid);
         printf("Process Status -- %c\n", status);
         printf("Memory -- %lu\n", memory);
+
+        int nb = readlink(exec, path, 1000);
+        path[nb] = '\0';
+
+        char *p;
+        char *str = path;
+        char *orig = home_dir;
+        char *rep = "~";
+        static char buffer[4096];
+        if (p = strstr(str, orig))
+        {
+            strncpy(buffer, str, p - str);
+            buffer[p - str] = '\0';
+            sprintf(buffer + (p-str), "%s%s", rep, p + strlen(orig));
+            strcpy(path, buffer);
+        }
+        printf("Executable Path -- %s\n", path);
     }
 }

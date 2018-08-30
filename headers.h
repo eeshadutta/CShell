@@ -19,7 +19,7 @@
 void cd(char *token, char *home_dir);
 void pwd();
 void echo(char *str);
-void ls(char *token);
+void ls(char *token, char *home_dir);
 void background_process(char st[][100], int k);
 void foreground(char st[][100], int k);
-void pinfo(char *token);
+void pinfo(char *token, char *home_dir);
