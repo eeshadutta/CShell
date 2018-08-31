@@ -1,4 +1,3 @@
-#include "headers.h"
 #include "variables.h"
 
 void foreground(char st[][100], int k)

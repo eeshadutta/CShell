@@ -58,7 +58,7 @@ void pinfo(char *token, char *home_dir)
         {
             strncpy(buffer, str, p - str);
             buffer[p - str] = '\0';
-            sprintf(buffer + (p-str), "%s%s", rep, p + strlen(orig));
+            sprintf(buffer + (p - str), "%s%s", rep, p + strlen(orig));
             strcpy(path, buffer);
         }
         printf("Executable Path -- %s\n", path);

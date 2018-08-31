@@ -2,7 +2,7 @@
 
 void echo(char *str)
 {
-    char *s = (char *)malloc(sizeof(char)*1024);
+    char *s = (char *)malloc(sizeof(char) * 1024);
     int i = 5, f = 0;
     while (str[i] != '\n')
         s[f++] = str[i++];
@@ -25,15 +25,17 @@ void echo(char *str)
     }
 
     i = 0;
-    while (s[i] == ' ') i++;
+    while (s[i] == ' ')
+        i++;
     int j = i;
-    while (s[j] != '\0') j++;
+    while (s[j] != '\0')
+        j++;
     j--;
 
     if ((s[i] != '\"') && (s[i] != '\'') && (s[j] != '\"') && (s[j] != '\''))
     {
         token = strtok(s, " ");
-        while(token != NULL)
+        while (token != NULL)
         {
             printf("%s ", token);
             token = strtok(NULL, " ");
@@ -41,24 +43,25 @@ void echo(char *str)
     }
     else
     {
+        while(s[j] == ' ') j--;
         while ((s[i] == '\"' && s[j] == '\"') || (s[i] == '\'' && s[j] == '\''))
         {
             i++;
             j--;
         }
-        if (s[i] == '\"' || s[i] == '\'' || s[j] == '\"' || s[j] == '\'') 
+        if (s[i] == '\"' || s[i] == '\'' || s[j] == '\"' || s[j] == '\'')
         {
-            printf ("invalid string\n");
+            printf("invalid string\n");
             return;
         }
         j++;
-        while(i != j)
+        while (i != j)
         {
             printf("%c", s[i]);
             i++;
         }
     }
-    printf ("\n");
+    printf("\n");
     free(s);
     return;
 }

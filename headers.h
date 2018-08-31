@@ -15,6 +15,7 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <syslog.h>
 
 void cd(char *token, char *home_dir);
 void pwd();
@@ -23,3 +24,5 @@ void ls(char *token, char *home_dir);
 void background_process(char st[][100], int k);
 void foreground(char st[][100], int k);
 void pinfo(char *token, char *home_dir);
+void remindme(char *token);
+void clock_display(char *token);

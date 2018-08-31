@@ -32,19 +32,6 @@ void print()
     free(cwd);
 }
 
-// void sig_handle(int sign)
-// {
-//     if (sign == 2 || sign == 3)
-//     {
-//         fflush(stdout);
-//         printf("\n");
-//         signal(SIGQUIT, sig_handle);
-//         signal(SIGINT, sig_handle);
-//     }
-//     if (sign == 20)
-//         kill(curid, SIGTSTP);
-// }
-
 void child_sig(int signo)
 {
     pid_t pid;
@@ -89,14 +76,8 @@ int main()
 
     print();
 
-    // /signal(SIGINT, SIG_IGN);
-    // signal(SIGINT, sig_handle);
     signal(SIGCHLD, SIG_IGN);
     signal(SIGCHLD, child_sig);
-    // signal(SIGTSTP, SIG_IGN);
-    // signal(SIGTSTP, sig_handle);
-    // signal(SIGQUIT, SIG_IGN);
-    // signal(SIGQUIT, sig_handle);
 
     while (1)
     {
@@ -133,9 +114,13 @@ int main()
             else if (strcmp(token, "echo") == 0)
                 echo(token);
             else if (strcmp(token, "ls") == 0)
-                ls(token,  present_dir[2]);
+                ls(token, present_dir[2]);
             else if (strcmp(token, "pinfo") == 0)
                 pinfo(token, present_dir[2]);
+            else if (strcmp(token, "remindme") == 0)
+                remindme(token);
+            else if (strcmp(token, "clock") == 0)
+                clock_display(token);
             else
             {
                 int k = 0;

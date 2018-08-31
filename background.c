@@ -1,11 +1,10 @@
-//#include "headers.h"
 #include "variables.h"
 
 void background_process(char st[100][100], int k)
 {
-    char *com[k+1];
+    char *com[k + 1];
     int i = 0;
-    for (i=0; i<k; i++)
+    for (i = 0; i < k; i++)
     {
         com[i] = st[i];
     }
@@ -22,7 +21,7 @@ void background_process(char st[100][100], int k)
     {
         execvp(com[0], com);
     }
-    else 
+    else
     {
         back_c++;
         printf("[%d] %d\n", back_c, pid);
@@ -30,7 +29,7 @@ void background_process(char st[100][100], int k)
 
     char name[100];
     strcpy(name, com[0]);
-    for (i=1; i<(k-1); i++)
+    for (i = 1; i < (k - 1); i++)
     {
         strcat(name, " ");
         strcat(name, st[i]);
