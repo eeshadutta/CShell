@@ -1,7 +1,9 @@
 ## RUNNING THE SHELL
 
 run `make` to generate the executable
+
 run `./shell` to run the shell
+
 run `quit` to exit the shell
 
 
@@ -48,5 +50,5 @@ run `quit` to exit the shell
 - type `remindme <no of seconds> "task"` to set a reminder
 
 #### clock
-- type `clock -t <interval time> to display the date and time after specified interval
+- type `clock -t <interval time>` to display the date and time after specified interval
 - made using hardware clock "/sys/class/rtc/rtc0"
