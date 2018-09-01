@@ -10,11 +10,12 @@ void clock_display(char *token)
         token = strtok(NULL, " \n\t\r");
     }
     int rem = atoi(st[2]);
+    int n = (atoi(st[4]) / rem) + 1;
 
     char d[40], t[40];
     strcpy(d, "/sys/class/rtc/rtc0/date");
     strcpy(t, "/sys/class/rtc/rtc0/time");
-    while (1)
+    while (n--)
     {
         FILE *fp = fopen(d, "r");
         char dinfo[100], tinfo[100];
