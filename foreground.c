@@ -1,4 +1,4 @@
-#include "variables.h"
+#include "headers.h"
 
 void foreground(char st[][100], int k)
 {
@@ -27,31 +27,31 @@ void foreground(char st[][100], int k)
     }
     else
     {
+        fore_c++;
+        int x;
+        curid = pid;
+        char name[100];
+        strcpy(name, com[0]);
+        for (i = 1; i < (k - 1); i++)
+        {
+            strcat(name, " ");
+            strcat(name, st[i]);
+        }
+
+        fore[fore_c].pid = pid;
+        strcpy(fore[fore_c].name, name);
+
+        if (WIFSTOPPED(x))
+        {
+            fore[fore_c].state = 1;
+        }
+        else
+        {
+            fore[fore_c].state = 0;
+        }
         while (wait(&status) != pid)
             ;
     }
 
-    int x;
-    curid = pid;
-    char name[100];
-    strcpy(name, com[0]);
-    for (i = 1; i < (k - 1); i++)
-    {
-        strcat(name, " ");
-        strcat(name, st[i]);
-    }
-
-    background[back_c].pi = pid;
-    strcpy(background[back_c].name, name);
-
-    if (WIFSTOPPED(x))
-    {
-        background[back_c].state = 1;
-    }
-    else
-    {
-        background[back_c].state = 0;
-    }
-    back_c++;
     return;
 }

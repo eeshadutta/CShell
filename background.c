@@ -1,4 +1,4 @@
-#include "variables.h"
+#include "headers.h"
 
 void background_process(char st[100][100], int k)
 {
@@ -23,8 +23,8 @@ void background_process(char st[100][100], int k)
     }
     else
     {
-        back_c++;
-        printf("[%d] %d\n", back_c, pid);
+        job_c++;
+        printf("[%d] %d\n", job_c, pid);
     }
 
     char name[100];
@@ -35,8 +35,8 @@ void background_process(char st[100][100], int k)
         strcat(name, st[i]);
     }
 
-    background[back_c].pi = pid;
-    background[back_c].state = 1;
-    strcpy(background[back_c].name, name);
+    jobs[job_c].pid = pid;
+    jobs[job_c].state = 1;
+    strcpy(jobs[job_c].name, name);
     return;
 }
