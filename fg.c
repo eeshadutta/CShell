@@ -10,6 +10,7 @@ void fg(char buff[][100])
     }
     if (jobs[proc].state == 1)
     {
+        jobs[proc].state = 0;
         printf("%s\n", jobs[proc].name);
         int s;
         waitpid(jobs[proc].pid, &s, 0);
@@ -20,7 +21,6 @@ void fg(char buff[][100])
     }
     else
     {
-        jobs[proc].state = 1;
         printf("%s\n", jobs[proc].name);
         int pid = fork();
         if (pid == 0)

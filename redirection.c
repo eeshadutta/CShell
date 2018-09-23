@@ -87,7 +87,5 @@ void redirection(char *buf, int type)
         while (wait(&status) != pid)
             ;
     }
-    // if (in >= 0) close(in);
-    // if (out >= 0) close(out);
     return;
 }

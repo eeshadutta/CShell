@@ -81,22 +81,23 @@ void child_sig(int signo)
     }
 }
 
-// void sig_handler(int signo)
-// {
-//     if (signo == 3)
-//     {
-//         int i;
-//         for (i = 1; i <= job_c; i++)
-//         {
-//             if (jobs[i].state == 1)
-//             {
-//                 jobs[i].state = 0;
-//                 kill(jobs[i].pid, 9);
-//             }
-//         }
-//         signal(SIGTSTP, sig_handler);
-//     }
-// }
+void sig_handler(int signo)
+{
+    int i;
+    for (i=1; i<=fore_c; i++)
+    {
+        if (fore[i].state == 1)
+        {
+            kill(fore[i].pid, 9);
+            fore[i].state = 0;
+            job_c++;
+            jobs[job_c].state = fore[i].state;
+            jobs[job_c].pid = fore[fore_c].pid;
+            strcpy(jobs[job_c].name, fore[fore_c].name);
+        }
+    }
+    signal(SIGTSTP, sig_handler);
+}
 
 int main()
 {
@@ -123,6 +124,7 @@ int main()
     signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGTSTP, SIG_IGN);
+    //signal(SIGTSTP, sig_handler);
 
     while (1)
     {

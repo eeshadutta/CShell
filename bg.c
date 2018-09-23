@@ -8,8 +8,7 @@ void bg(char buff[][100])
     if (pid == 0)
     {
         pid_t proc_id = getpid();
-        setpgid(proc_id, jobs[proc].pid);
-        // jobs[proc].pid = proc_id;
+        jobs[proc].pid = proc_id;
         int k = 0, i;
         char st[100][100];
         char *temp = strtok(jobs[proc].name, " \n\t\r");
@@ -24,11 +23,10 @@ void bg(char buff[][100])
             com[i] = st[i];
         com[i] = NULL;
         
-        //kill(jobs[proc].pid, SIGCONT);
         execvp(com[0], com);
     }
     else 
     {
-        printf("[%d] %d\n", proc, jobs[proc].pid);
+        jobs[proc].pid = pid;
     }
 }
