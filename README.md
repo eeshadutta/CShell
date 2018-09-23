@@ -42,6 +42,40 @@ run `quit` to exit the shell
 #### pinfo command
 - `pinfo` - prints process info of the shell
 - `pinfo <pid>` - prints process info of given pid
+  
+#### Input/Output redirection
+- Ouput of one command can be redirected to a file
+- Similarly input can be taken from another file
+
+#### Redirection using Pipes
+- One or more commands can be piped
+- Pipes and i/o redirection can be done together
+
+#### Environment variables
+- The shell inherits environment variables from the parent 
+- `setenv var value` - used to create environment variable var
+- `unsetenv var` - destroy the variable var
+
+#### jobs command
+- `jobs` - prints a list of all background processes
+
+#### kjob command
+- `kjob <jobnumber> <signal>` - takes the job id of a running job and sends a signal value to that process
+
+#### fg command
+- `fg <jobnumber>` - brings a running or a stopped background job with given job number to foreground
+
+#### bg command
+- `bg <jobnumber>` - changes a stopped background job to a running background job
+
+#### overkill command 
+- `overkill` - kills all background process at once
+
+#### quit command
+- `quit` - exit the shell. The shell exits only when quit is typed
+
+#### Signals
+- **CTRL+C** - sends a SIGINT signal to the foreground jobs of the shell and not the shell itself
 
 
 ## ADITIONAL FEATURES
