@@ -3,15 +3,17 @@
 void bg(char buff[][100])
 {
     int proc = atoi(buff[1]);
-    jobs[proc].state = 1;
+    back[proc].state = 1;
     int pid = fork();
+    childpid = pid;
     if (pid == 0)
     {
         pid_t proc_id = getpid();
-        jobs[proc].pid = proc_id;
+        setpgid(0, 0);
+        back[proc].pid = proc_id;
         int k = 0, i;
         char st[100][100];
-        char *temp = strtok(jobs[proc].name, " \n\t\r");
+        char *temp = strtok(back[proc].name, " \n\t\r");
         while (temp != NULL)
         {
             strcpy(st[k++], temp);
@@ -27,6 +29,6 @@ void bg(char buff[][100])
     }
     else 
     {
-        jobs[proc].pid = pid;
+        back[proc].pid = pid;
     }
 }

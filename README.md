@@ -75,7 +75,8 @@ run `quit` to exit the shell
 - `quit` - exit the shell. The shell exits only when quit is typed
 
 #### Signals
-- **CTRL+C** - sends a SIGINT signal to the foreground jobs of the shell and not the shell itself
+- **CTRL+C** - sends a SIGINT signal to the foreground jobs of the shell and not the shell itself and neither to the background processes of the shell
+- **CTRL+Z** - sends a SIGTTIN and SIGTSTP signal to the foreground process. Does not ecit the shell
 
 
 ## ADITIONAL FEATURES

@@ -2,9 +2,9 @@
 
 struct utsname uinfo;
 char present_dir[3][500];
-job jobs[100];
-job fore[100];
-int job_c = 0, fore_c = 0, curid = 0;
+job back[100];
+job fore;
+int back_count = 0, shellid = 0, childpid = -1;
 int mode;
 
 char *replace_str(char *str, char *orig, char *rep)
@@ -46,14 +46,14 @@ int check_redirection(char *token)
     return 0;
 }
 
-int check_pipe(char * token)
+int check_pipe(char *token)
 {
     int i;
     int l = strlen(token);
-    for (i=0; i<l; i++)
+    for (i = 0; i < l; i++)
     {
         if (token[i] == '|')
-        return 1;
+            return 1;
     }
     return 0;
 }
@@ -64,39 +64,50 @@ void child_sig(int signo)
     int x;
     pid = waitpid(WAIT_ANY, &x, WNOHANG);
     int i;
-    for (i = 1; i <= job_c; i++)
+    for (i = 1; i <= back_count; i++)
     {
-        if (jobs[i].pid == pid && jobs[i].state == 1)
+        if (back[i].pid == pid && back[i].state == 1)
         {
             int exit_status = WEXITSTATUS(x);
-            jobs[i].state = 0;
+            back[i].state = 0;
             if (exit_status == 0)
-                printf("\n%s with pid %d exited normally\n", jobs[i].name, jobs[i].pid);
+                printf("\n%s with pid %d exited normally\n", back[i].name, back[i].pid);
             else
-                printf("\n%s with pid %d exited with exit status %d\n", jobs[i].name, jobs[i].pid, exit_status);
+                printf("\n%s with pid %d exited with exit status %d\n", back[i].name, back[i].pid, exit_status);
             print();
             fflush(stdout);
             break;
         }
     }
+    signal(SIGCHLD, child_sig);
 }
 
-void sig_handler(int signo)
+void ctrl_c(int signo)
 {
-    int i;
-    for (i=1; i<=fore_c; i++)
+    pid_t p = getpid();
+    if (p != shellid)
+        return;
+    if (childpid != -1)
+        kill(childpid, SIGINT);
+    signal(SIGINT, ctrl_c);
+}
+
+void ctrl_z(int signo)
+{
+    pid_t p = getpid();
+    if (p != shellid)
+        return;
+    print();
+    if (childpid != -1)
     {
-        if (fore[i].state == 1)
-        {
-            kill(fore[i].pid, 9);
-            fore[i].state = 0;
-            job_c++;
-            jobs[job_c].state = fore[i].state;
-            jobs[job_c].pid = fore[fore_c].pid;
-            strcpy(jobs[job_c].name, fore[fore_c].name);
-        }
+        kill(childpid, SIGTTIN);
+        kill(childpid, SIGTSTP);
+        back_count++;
+        back[back_count].pid = childpid;
+        back[back_count].state = 0;
+        strcpy(back[back_count].name, fore.name);
     }
-    signal(SIGTSTP, sig_handler);
+    signal(SIGTSTP, ctrl_z);
 }
 
 int main()
@@ -108,6 +119,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
+    shellid = getpid();
     char *cwd = (char *)malloc(sizeof(char) * 1024);
     cwd = getcwd(cwd, 1024);
 
@@ -121,13 +133,12 @@ int main()
 
     signal(SIGCHLD, SIG_IGN);
     signal(SIGCHLD, child_sig);
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
-    //signal(SIGTSTP, sig_handler);
+    signal(SIGINT, ctrl_c);
+    signal(SIGTSTP, ctrl_z);
 
     while (1)
     {
+        childpid = -1;
         char *com;
         char *token_arr[200];
         ssize_t size = 0;
@@ -172,8 +183,6 @@ int main()
                 cd(token, present_dir[2]);
             else if (strcmp(token, "pwd") == 0)
                 pwd();
-            // else if (strcmp(token, "echo") == 0)
-            //     echo(token);
             else if (strcmp(token, "ls") == 0)
                 ls(token, present_dir[2]);
             else if (strcmp(token, "pinfo") == 0)

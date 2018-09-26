@@ -3,12 +3,12 @@
 void overkill()
 {
     int i;
-    for (i=1; i<=job_c; i++)
+    for (i=1; i<=back_count; i++)
     {
-        if (jobs[i].state == 1)
+        if (back[i].state == 1)
         {
-            kill(jobs[i].pid, 9);
-            jobs[i].state = 0;
+            kill(back[i].pid, 9);
+            back[i].state = 0;
         }
     }
 }

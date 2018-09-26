@@ -11,6 +11,7 @@ void background_process(char st[100][100], int k)
     com[i] = NULL;
 
     int pid = fork();
+    childpid = pid;
 
     if (pid < 0)
     {
@@ -19,12 +20,13 @@ void background_process(char st[100][100], int k)
     }
     else if (pid == 0)
     {
+        setpgid(0, 0);
         execvp(com[0], com);
     }
     else
     {
-        job_c++;
-        printf("[%d] %d\n", job_c, pid);
+        back_count++;
+        printf("[%d] %d\n", back_count, pid);
     }
 
     char name[100];
@@ -35,8 +37,8 @@ void background_process(char st[100][100], int k)
         strcat(name, st[i]);
     }
 
-    jobs[job_c].pid = pid;
-    jobs[job_c].state = 1;
-    strcpy(jobs[job_c].name, name);
+    back[back_count].pid = pid;
+    back[back_count].state = 1;
+    strcpy(back[back_count].name, name);
     return;
 }

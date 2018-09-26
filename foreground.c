@@ -27,9 +27,8 @@ void foreground(char st[][100], int k)
     }
     else
     {
-        fore_c++;
         int x;
-        curid = pid;
+        shellid = pid;
         char name[100];
         strcpy(name, com[0]);
         for (i = 1; i < (k - 1); i++)
@@ -38,16 +37,16 @@ void foreground(char st[][100], int k)
             strcat(name, st[i]);
         }
 
-        fore[fore_c].pid = pid;
-        strcpy(fore[fore_c].name, name);
+        fore.pid = pid;
+        strcpy(fore.name, name);
 
         if (WIFSTOPPED(x))
         {
-            fore[fore_c].state = 1;
+            fore.state = 1;
         }
         else
         {
-            fore[fore_c].state = 0;
+            fore.state = 0;
         }
         while (wait(&status) != pid)
             ;

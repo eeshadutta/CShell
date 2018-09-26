@@ -24,11 +24,11 @@ typedef struct job
     int state;
 } job;
 
-extern job jobs[100];
-extern job fore[100];
-extern int job_c; 
-extern int fore_c;
-extern int curid;
+extern job back[100];
+extern job fore;
+extern int back_count;
+extern int shellid;
+extern pid_t childpid;
 
 void cd(char *token, char *home_dir);
 void pwd();
