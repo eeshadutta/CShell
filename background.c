@@ -38,7 +38,7 @@ void background_process(char st[100][100], int k)
     }
 
     back[back_count].pid = pid;
-    back[back_count].state = 1;
+    back[back_count].is_back = 1;
     strcpy(back[back_count].name, name);
     return;
 }

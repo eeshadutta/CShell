@@ -66,10 +66,9 @@ void child_sig(int signo)
     int i;
     for (i = 1; i <= back_count; i++)
     {
-        if (back[i].pid == pid && back[i].state == 1)
+        if (back[i].pid == pid)
         {
             int exit_status = WEXITSTATUS(x);
-            back[i].state = 0;
             if (exit_status == 0)
                 printf("\n%s with pid %d exited normally\n", back[i].name, back[i].pid);
             else
@@ -97,14 +96,14 @@ void ctrl_z(int signo)
     pid_t p = getpid();
     if (p != shellid)
         return;
-    print();
+    //print();
     if (childpid != -1)
     {
         kill(childpid, SIGTTIN);
         kill(childpid, SIGTSTP);
         back_count++;
         back[back_count].pid = childpid;
-        back[back_count].state = 0;
+        back[back_count].is_back = 1;
         strcpy(back[back_count].name, fore.name);
     }
     signal(SIGTSTP, ctrl_z);
@@ -214,9 +213,9 @@ int main()
                 else if (strcmp(st[0], "kjob") == 0)
                     kjob(st);
                 else if (strcmp(st[0], "fg") == 0)
-                    fg(st);
+                    fg(st, k);
                 else if (strcmp(st[0], "bg") == 0)
-                    bg(st);
+                    bg(st, k);
                 else
                     foreground(st, k);
             }

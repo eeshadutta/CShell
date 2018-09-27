@@ -3,14 +3,38 @@
 void print_jobs()
 {
     int i;
+    int j = 1;
     for (i = 1; i <= back_count; i++)
     {
-        if (strcmp(back[i].name, "") != 0)
+        if (back[i].is_back == 1)
         {
-            if (back[i].state == 1)
-                printf("[%d] %s %s [%d]\n", i, "Running", back[i].name, back[i].pid);
+            char stat[1000];
+            char status;
+            int p;
+            long unsigned mem;
+            char str[10];
+            sprintf(str, "%d", back[i].pid);
+
+            strcpy(stat, "/proc/");
+            strcat(stat, str);
+            strcat(stat, "/stat");
+            FILE *fd;
+            if ((fd = fopen(stat, "r")) == NULL)
+            {
+                printf("[%d] %s %s [%d]\n", j, "Done", back[i].name, back[i].pid);
+            }
             else
-                printf("[%d] %s %s [%d]\n", i, "Stopped", back[i].name, back[i].pid);
+            {
+                fscanf(fd, "%d %*s %c %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %lu %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d", &p, &status, &mem);
+                fclose(fd);
+                printf("[%d] ", j);
+                if (status == 'T')
+                    printf("%s ", "Stopped");
+                else 
+                    printf("%s ", "Running");
+                printf("%s [%d]\n", back[i].name, back[i].pid);
+            }
+            j++;
         }
     }
 }

@@ -1,63 +1,49 @@
 #include "headers.h"
 
-void fg(char buff[][100])
+void fg(char buff[][100], int k)
 {
     int proc = atoi(buff[1]);
-    if (proc > back_count)
-    {
-        printf("No such job exists\n");
-        return;
-    }
-    if (back[proc].state == 1)
-    {
-        back[proc].state = 0;
-        printf("%s\n", back[proc].name);
-        int s;
-        childpid = getpid();
-        waitpid(back[proc].pid, &s, 0);
-        strcpy(fore.name, back[proc].name);
-        fore.pid = back[proc].pid;
-        fore.state = back[proc].state;
-        strcpy(back[proc].name, "");
-    }
+    if (k >= 3)
+        printf("Too many arguments\n");
+    else if (k <= 1)
+        printf("Too few arguments\n");
     else
     {
-        printf("%s\n", back[proc].name);
-        int pid = fork();
-        if (pid == 0)
-        {
-            pid_t proc_id = getpid();
-            childpid = proc_id;
-            setpgid(proc_id, back[proc].pid);
-            int k = 0, i;
-            char st[100][100];
-            char *temp = strtok(back[proc].name, " \n\t\r");
-            while (temp != NULL)
-            {
-                strcpy(st[k++], temp);
-                temp = strtok(NULL, " \n\t\r");
-            }
-
-            char *com[k + 1];
-            for (i = 0; i < k; i++)
-                com[i] = st[i];
-            com[i] = NULL;
-
-            if (execvp(com[0], com) == -1)
-            {
-                printf("no such command\n");
-                return;
-            }
-        }
+        if (proc > back_count)
+            printf("No such job/n");
         else
         {
-            int status;
-            strcpy(fore.name, back[proc].name);
-            fore.pid = back[proc].pid;
-            fore.state = back[proc].state;
-            strcpy(back[proc].name, "");
-            while (wait(&status) != pid)
-                ;
+            pid_t pid = back[proc].pid;
+            char stat[1000];
+            char status;
+            int p;
+            long unsigned mem;
+            char str[10];
+            sprintf(str, "%d", back[proc].pid);
+
+            strcpy(stat, "/proc/");
+            strcat(stat, str);
+            strcat(stat, "/stat");
+            FILE *fd;
+            if ((fd = fopen(stat, "r")) == NULL)
+            {
+                printf("Process has been terminated. Cannot bring to foreground.\n");
+            }
+            else
+            {
+                kill(pid, SIGCONT);
+                childpid = pid;
+                strcpy(fore.name, back[proc].name);
+                fore.pid = back[proc].pid;
+                fore.is_back = 0;
+                int j = proc;
+                for (j = proc; j < back_count; j++)
+                {
+                    back[j] = back[j + 1];
+                }
+                back_count--;
+                waitpid(-1, NULL, WUNTRACED);
+            }
         }
     }
 }

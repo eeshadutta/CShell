@@ -62,6 +62,8 @@ void execute_pipe(char *buff)
     {
         pipe(fd);
         pid = fork();
+        int saved_stdout = dup(STDOUT_FILENO);
+
         if (pid == -1)
         {
             exit(EXIT_FAILURE);
@@ -105,7 +107,30 @@ void execute_pipe(char *buff)
                     else
                         dup2(in, 0);
                 }
-                execvp(cmd[0], cmd);
+                char *token;
+                token = strtok(cmd[0], " \n\t\r");
+                if (strcmp(token, "cd") == 0)
+                    cd(token, present_dir[2]);
+                else if (strcmp(token, "pwd") == 0)
+                    pwd();
+                else if (strcmp(token, "pinfo") == 0)
+                    pinfo(token, "pinfo");
+                else if (strcmp(token, "remindme") == 0)
+                    remindme(token);
+                else if (strcmp(token, "clock") == 0)
+                    clock_display(token);
+                else if (strcmp(token, "jobs") == 0)
+                    print_jobs();
+                else if (strcmp(token, "overkill") == 0)
+                    overkill();
+                else
+                {
+                    if (execvp(cmd[0], cmd) == -1)
+                    {
+                        dup2(saved_stdout, 1);
+                        printf("no such command\n");
+                    }
+                }
             }
             if (check_op((*commands)[0]))
             {
@@ -133,11 +158,60 @@ void execute_pipe(char *buff)
                 {
                     int out = open(t, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR);
                     dup2(out, 1);
-                    execvp(cmd[0], cmd);
+
+                    char *token;
+                    token = strtok(cmd[0], " \n\t\r");
+                    if (strcmp(token, "cd") == 0)
+                        cd(token, present_dir[2]);
+                    else if (strcmp(token, "pwd") == 0)
+                        pwd();
+                    else if (strcmp(token, "pinfo") == 0)
+                        pinfo(token, "pinfo");
+                    else if (strcmp(token, "remindme") == 0)
+                        remindme(token);
+                    else if (strcmp(token, "clock") == 0)
+                        clock_display(token);
+                    else if (strcmp(token, "jobs") == 0)
+                        print_jobs();
+                    else if (strcmp(token, "overkill") == 0)
+                        overkill();
+                    else
+                    {
+                        if (execvp(cmd[0], cmd) == -1)
+                        {
+                            dup2(saved_stdout, 1);
+                            printf("no such command\n");
+                        }
+                    }
                 }
             }
             else
-                execvp((*commands)[0], *commands);
+            {
+                char *token;
+                token = strtok((*commands)[0], " \n\t\r");
+                if (strcmp(token, "cd") == 0)
+                    cd(token, present_dir[2]);
+                else if (strcmp(token, "pwd") == 0)
+                    pwd();
+                else if (strcmp(token, "pinfo") == 0)
+                    pinfo(token, "pinfo");
+                else if (strcmp(token, "remindme") == 0)
+                    remindme(token);
+                else if (strcmp(token, "clock") == 0)
+                    clock_display(token);
+                else if (strcmp(token, "jobs") == 0)
+                    print_jobs();
+                else if (strcmp(token, "overkill") == 0)
+                    overkill();
+                else
+                {
+                    if (execvp((*commands)[0], *commands) == -1)
+                    {
+                        dup2(saved_stdout, 1);
+                        printf("no such command\n");
+                    }
+                }
+            }
             exit(EXIT_FAILURE);
         }
         else

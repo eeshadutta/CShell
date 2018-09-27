@@ -19,16 +19,17 @@ void foreground(char st[][100], int k)
     }
     else if (pid == 0)
     {
+        setpgid(0, 0);
         if (execvp(com[0], com) == -1)
         {
             printf("no such command\n");
-            return;
+            exit(EXIT_FAILURE);
         }
     }
     else
     {
         int x;
-        shellid = pid;
+        childpid = pid;
         char name[100];
         strcpy(name, com[0]);
         for (i = 1; i < (k - 1); i++)
@@ -39,18 +40,7 @@ void foreground(char st[][100], int k)
 
         fore.pid = pid;
         strcpy(fore.name, name);
-
-        if (WIFSTOPPED(x))
-        {
-            fore.state = 1;
-        }
-        else
-        {
-            fore.state = 0;
-        }
-        while (wait(&status) != pid)
-            ;
+        fore.is_back = 0;
+        waitpid(-1, NULL, WUNTRACED);
     }
-
-    return;
 }

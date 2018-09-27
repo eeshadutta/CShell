@@ -21,14 +21,16 @@ typedef struct job
 {
     char name[100];
     int pid;
-    int state;
+    //int state;
+    int is_back;
 } job;
 
 extern job back[100];
 extern job fore;
 extern int back_count;
-extern int shellid;
+extern pid_t shellid;
 extern pid_t childpid;
+extern char present_dir[3][500];
 
 void cd(char *token, char *home_dir);
 void pwd();
@@ -45,6 +47,6 @@ void set_env(char buff[][100], int k);
 void unset_env(char buff[][100], int k);
 void print_jobs();
 void kjob(char buff[][100]);
-void fg(char buff[][100]);
-void bg(char buff[][100]);
+void fg(char buff[][100], int k);
+void bg(char buff[][100], int k);
 void overkill();
